@@ -322,7 +322,7 @@
         }
 
         // Update save article data to include images
-        document.getElementById('articleForm').addEventListener('submit', function(e) {
+        document.getElementById('articleForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const imageItems = document.querySelectorAll('.image-item img');
@@ -342,34 +342,52 @@
 
             // Save to localStorage for local editing
             localStorage.setItem('articleData', JSON.stringify(articleData));
-            
-            // Create URL with article data
-            const articleParam = btoa(JSON.stringify(articleData));
-            const baseUrl = window.location.href.split('?')[0].replace('admin.html', 'index.html');
-            const url = `${baseUrl}?article=${articleParam}`;
-            
-            // Copy URL to clipboard
-            navigator.clipboard.writeText(url).then(() => {
-                alert('Article URL has been copied to clipboard! Share this URL to view the article on any device.');
-            }).catch(() => {
-                // Fallback if clipboard API is not available
-                const tempInput = document.createElement('input');
-                tempInput.value = url;
-                document.body.appendChild(tempInput);
-                tempInput.select();
-                document.execCommand('copy');
-                document.body.removeChild(tempInput);
-                alert('Article URL has been copied to clipboard! Share this URL to view the article on any device.');
-            });
+
+            try {
+                // First, get the current file content to get its SHA
+                const response = await fetch('https://api.github.com/repos/Frisky100/FakeNews/contents/article.json', {
+                    headers: {
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Authorization': 'token ' + prompt('Please enter your GitHub Personal Access Token:')
+                    }
+                });
+                
+                const fileData = await response.json();
+                const currentContent = atob(fileData.content);
+                
+                // Update the file
+                const updateResponse = await fetch('https://api.github.com/repos/Frisky100/FakeNews/contents/article.json', {
+                    method: 'PUT',
+                    headers: {
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Authorization': 'token ' + localStorage.getItem('githubToken'),
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: 'Update article content',
+                        content: btoa(JSON.stringify(articleData, null, 2)),
+                        sha: fileData.sha
+                    })
+                });
+
+                if (updateResponse.ok) {
+                    const baseUrl = window.location.href.split('?')[0].replace('admin.html', 'index.html');
+                    alert('Article saved successfully! The changes will be visible in a few minutes.');
+                } else {
+                    throw new Error('Failed to save article');
+                }
+            } catch (error) {
+                console.error('Error saving article:', error);
+                alert('Error saving article. Please try again.');
+            }
         });
 
         // Preview article
         function previewArticle() {
             const articleData = JSON.parse(localStorage.getItem('articleData'));
             if (articleData) {
-                const articleParam = btoa(JSON.stringify(articleData));
                 const baseUrl = window.location.href.split('?')[0].replace('admin.html', 'index.html');
-                window.location.href = `${baseUrl}?article=${articleParam}`;
+                window.location.href = baseUrl;
             } else {
                 alert('Please save your changes first!');
             }

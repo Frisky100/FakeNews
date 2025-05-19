@@ -73,25 +73,15 @@
     <script>
         // Load article data
         document.addEventListener('DOMContentLoaded', function() {
-            // Get article data from URL parameter
-            const urlParams = new URLSearchParams(window.location.search);
-            const articleParam = urlParams.get('article');
-            
-            if (articleParam) {
-                try {
-                    const articleData = JSON.parse(atob(articleParam));
+            // Fetch article data from JSON file
+            fetch('article.json')
+                .then(response => response.json())
+                .then(articleData => {
                     updateArticleContent(articleData);
-                } catch (e) {
-                    console.error('Error parsing article data:', e);
-                }
-            } else {
-                // Fallback to localStorage for backward compatibility
-                const savedArticle = localStorage.getItem('articleData');
-                if (savedArticle) {
-                    const articleData = JSON.parse(savedArticle);
-                    updateArticleContent(articleData);
-                }
-            }
+                })
+                .catch(error => {
+                    console.error('Error loading article:', error);
+                });
         });
 
         function updateArticleContent(articleData) {
