@@ -115,15 +115,18 @@ body {
     display: grid;
     gap: 1rem;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    max-width: 100%;
+    overflow: hidden;
 }
 
 .article-images img {
     width: 100%;
     height: auto;
-    object-fit: cover;
+    object-fit: contain;
     border-radius: 8px;
     max-width: 100%;
     display: block;
+    margin: 0 auto;
 }
 
 .article-content {
@@ -243,23 +246,30 @@ body {
 
 @media (max-width: 768px) {
     .article {
-        margin-top: calc(var(--header-height) + 10px);
         padding: 15px;
+        margin: calc(var(--header-height) + 10px) 0 0 0;
+        width: 100%;
+        box-shadow: none;
     }
     
     .article-title {
-        font-size: 1.8em;
+        font-size: 1.6em;
+        line-height: 1.3;
+        margin-bottom: 12px;
     }
     
     .article-meta {
         flex-direction: column;
         align-items: flex-start;
-        gap: 10px;
+        gap: 8px;
+        font-size: 0.85em;
+        margin-bottom: 15px;
+        padding-bottom: 12px;
     }
     
     .header-container {
-        padding: 0 16px;
-        gap: 16px;
+        padding: 0 12px;
+        gap: 12px;
     }
     
     .main-nav {
@@ -267,26 +277,99 @@ body {
     }
     
     .logo {
-        height: 40px;
+        height: 36px;
     }
     
     .admin-link {
-        padding: 5px 12px;
-        font-size: 0.8rem;
+        padding: 4px 10px;
+        font-size: 0.75rem;
         border-radius: 6px;
     }
     
     .article-content {
         font-size: 1em;
+        line-height: 1.6;
+    }
+    
+    .article-content p {
+        margin-bottom: 16px;
     }
     
     .article-images {
         grid-template-columns: 1fr;
+        margin: 1rem 0;
+        padding: 0;
     }
     
     .article-images img {
-        max-height: 300px;
-        object-fit: cover;
+        max-height: none;
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+        margin: 0;
+    }
+
+    .article-footer {
+        margin-top: 30px;
+        padding-top: 15px;
+    }
+
+    .article-tags {
+        gap: 8px;
+        margin-top: 15px;
+    }
+
+    .article-tag {
+        padding: 4px 10px;
+        font-size: 0.85em;
+    }
+
+    .source {
+        margin-top: 15px;
+        padding: 10px;
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+
+    .site-footer {
+        padding: 1.5rem 0;
+        margin-top: 2rem;
+    }
+
+    .footer-content {
+        padding: 0 12px;
+    }
+
+    .footer-content p {
+        font-size: 0.9rem;
+    }
+}
+
+/* Add styles for very small screens */
+@media (max-width: 480px) {
+    .article-title {
+        font-size: 1.4em;
+    }
+
+    .article-meta {
+        font-size: 0.8em;
+    }
+
+    .article-content {
+        font-size: 0.95em;
+    }
+
+    .header-container {
+        padding: 0 10px;
+    }
+
+    .logo {
+        height: 32px;
+    }
+
+    .admin-link {
+        padding: 3px 8px;
+        font-size: 0.7rem;
     }
 }
 
