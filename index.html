@@ -12,7 +12,7 @@
     <title>Nationalpark Stilfserjoch: Geschützter Auerhahn von Vinschger Wilderern erschossen | stol.it</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+    <link rel="icon" type="image/png" href="images/BSSfavicon.png">
 </head>
 <body>
     <header class="site-header">
@@ -78,6 +78,8 @@
                 .then(response => response.json())
                 .then(articleData => {
                     updateArticleContent(articleData);
+                    // Set the page title
+                    document.title = articleData.title + ' | stol.it';
                 })
                 .catch(error => {
                     console.error('Error loading article:', error);
