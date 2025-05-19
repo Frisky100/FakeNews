@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Article Editor | stol.it</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-container">
+            <a href="index.html">
+                <img src="images/logo.svg" alt="stol.it" class="logo">
+            </a>
+            <a href="index.html" class="admin-link">View Article</a>
+        </div>
+    </header>
+
+    <div id="loginContainer" class="admin-container">
+        <div class="login-box">
+            <h1><i class="fas fa-lock"></i> Admin Login</h1>
+            <form id="loginForm" class="admin-form">
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="password-input">
+                        <input type="password" id="password" name="password" required>
+                        <button type="button" class="toggle-password" onclick="togglePassword()">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-save">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="editorContainer" class="admin-container" style="display: none;">
+        <div class="editor-header">
+            <h1><i class="fas fa-edit"></i> Article Editor</h1>
+            <div class="editor-actions">
+                <button type="button" class="btn-preview" onclick="previewArticle()">
+                    <i class="fas fa-eye"></i> Preview
+                </button>
+                <button type="button" class="btn-logout" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+        
+        <form id="articleForm" class="admin-form">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input type="text" id="title" name="title" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <input type="text" id="category" name="category" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="date">Date</label>
+                    <input type="date" id="date" name="date" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="time">Time</label>
+                    <input type="time" id="time" name="time" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="author">Author</label>
+                    <input type="text" id="author" name="author" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="views">Views</label>
+                    <input type="number" id="views" name="views" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="content">Content</label>
+                <div class="editor-toolbar">
+                    <button type="button" class="editor-btn" onclick="formatText('h1')" title="Überschrift">
+                        <i class="fas fa-heading"></i>
+                    </button>
+                    <button type="button" class="editor-btn" onclick="formatText('h2')" title="Unterüberschrift">
+                        <i class="fas fa-heading" style="font-size: 0.8em;"></i>
+                    </button>
+                    <button type="button" class="editor-btn" onclick="formatText('p')" title="Normaler Text">
+                        <i class="fas fa-paragraph"></i>
+                    </button>
+                    <button type="button" class="editor-btn" onclick="formatText('bold')" title="Fett">
+                        <i class="fas fa-bold"></i>
+                    </button>
+                    <button type="button" class="editor-btn" onclick="formatText('italic')" title="Kursiv">
+                        <i class="fas fa-italic"></i>
+                    </button>
+                    <button type="button" class="editor-btn" onclick="formatText('link')" title="Link einfügen">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+                <textarea id="content" name="content" rows="10" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Article Images</label>
+                <div class="image-upload-container">
+                    <div class="image-preview" id="imagePreview">
+                        <!-- Images will be displayed here -->
+                    </div>
+                    <div class="image-upload-controls">
+                        <input type="file" id="imageUpload" accept="image/*" multiple style="display: none;">
+                        <button type="button" class="btn-upload" onclick="document.getElementById('imageUpload').click()">
+                            <i class="fas fa-upload"></i> Upload Images
+                        </button>
+                        <button type="button" class="btn-clear-images" onclick="clearImages()">
+                            <i class="fas fa-trash"></i> Clear All Images
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="tags">Tags (comma-separated)</label>
+                <input type="text" id="tags" name="tags" required>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-save">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Check if already logged in
+        document.addEventListener('DOMContentLoaded', function() {
+            if (localStorage.getItem('adminLoggedIn') === 'true') {
+                showEditor();
+            }
+        });
+
+        // Handle login
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const password = document.getElementById('password').value;
+            
+            // Simple password check
+            if (password === 'Aconitum2025') {
+                localStorage.setItem('adminLoggedIn', 'true');
+                showEditor();
+            } else {
+                alert('Incorrect password!');
+            }
+        });
+
+        function showEditor() {
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('editorContainer').style.display = 'block';
+            loadArticleData();
+        }
+
+        function logout() {
+            localStorage.removeItem('adminLoggedIn');
+            document.getElementById('loginContainer').style.display = 'block';
+            document.getElementById('editorContainer').style.display = 'none';
+            document.getElementById('password').value = '';
+        }
+
+        function loadArticleData() {
+            const savedArticle = localStorage.getItem('articleData');
+            if (savedArticle) {
+                const article = JSON.parse(savedArticle);
+                document.getElementById('title').value = article.title || '';
+                document.getElementById('date').value = article.date || '';
+                document.getElementById('time').value = article.time || '';
+                document.getElementById('category').value = article.category || '';
+                document.getElementById('author').value = article.author || '';
+                document.getElementById('views').value = article.views || '0';
+                document.getElementById('content').value = article.content || '';
+                document.getElementById('tags').value = (article.tags || []).join(', ');
+                
+                // Load saved images
+                if (article.images && article.images.length > 0) {
+                    const imagePreview = document.getElementById('imagePreview');
+                    imagePreview.innerHTML = '';
+                    article.images.forEach((imageData, index) => {
+                        addImageToPreview(imageData, index);
+                    });
+                }
+            } else {
+                // Set default values if no saved data
+                const now = new Date();
+                document.getElementById('date').value = now.toISOString().split('T')[0];
+                document.getElementById('time').value = now.toTimeString().slice(0, 5);
+                document.getElementById('views').value = '0';
+                document.getElementById('title').value = '';
+                document.getElementById('category').value = '';
+                document.getElementById('author').value = '';
+                document.getElementById('tags').value = '';
+                document.getElementById('content').value = '';
+            }
+        }
+
+        // Handle image uploads
+        document.getElementById('imageUpload').addEventListener('change', function(e) {
+            const files = e.target.files;
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const imageData = e.target.result;
+                        addImageToPreview(imageData, document.querySelectorAll('.image-item').length);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+            // Clear the input to allow selecting the same file again
+            this.value = '';
+        });
+
+        function addImageToPreview(imageData, index) {
+            const imagePreview = document.getElementById('imagePreview');
+            const imageItem = document.createElement('div');
+            imageItem.className = 'image-item';
+            imageItem.innerHTML = `
+                <img src="${imageData}" alt="Article image ${index + 1}">
+                <div class="image-controls">
+                    <button type="button" class="btn-remove-image" onclick="removeImage(${index})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+            imagePreview.appendChild(imageItem);
+        }
+
+        function removeImage(index) {
+            const imageItems = document.querySelectorAll('.image-item');
+            if (imageItems[index]) {
+                imageItems[index].remove();
+                updateImageOrder();
+            }
+        }
+
+        function clearImages() {
+            if (confirm('Are you sure you want to remove all images?')) {
+                document.getElementById('imagePreview').innerHTML = '';
+            }
+        }
+
+        function updateImageOrder() {
+            const imageItems = document.querySelectorAll('.image-item');
+            imageItems.forEach((item, index) => {
+                const removeButton = item.querySelector('.btn-remove-image');
+                removeButton.onclick = () => removeImage(index);
+            });
+        }
+
+        function formatText(command) {
+            const textarea = document.getElementById('content');
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const selectedText = textarea.value.substring(start, end);
+            let replacement = '';
+
+            switch(command) {
+                case 'h1':
+                    replacement = `\n# ${selectedText}\n`;
+                    break;
+                case 'h2':
+                    replacement = `\n## ${selectedText}\n`;
+                    break;
+                case 'p':
+                    replacement = `\n${selectedText}\n`;
+                    break;
+                case 'bold':
+                    if (selectedText) {
+                        replacement = ` **${selectedText}** `;
+                    } else {
+                        replacement = ' **Bold Text** ';
+                    }
+                    break;
+                case 'italic':
+                    if (selectedText) {
+                        replacement = ` *${selectedText}* `;
+                    } else {
+                        replacement = ' *Italic Text* ';
+                    }
+                    break;
+                case 'link':
+                    const url = prompt('Bitte URL eingeben:');
+                    if (url) {
+                        if (selectedText) {
+                            replacement = ` [${selectedText}](${url}) `;
+                        } else {
+                            replacement = ` [Link Text](${url}) `;
+                        }
+                    } else {
+                        return;
+                    }
+                    break;
+            }
+
+            const newValue = textarea.value.substring(0, start) + replacement + textarea.value.substring(end);
+            textarea.value = newValue;
+            
+            // Restore cursor position
+            const newCursorPos = start + replacement.length;
+            textarea.setSelectionRange(newCursorPos, newCursorPos);
+            textarea.focus();
+        }
+
+        // Update save article data to include images
+        document.getElementById('articleForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const imageItems = document.querySelectorAll('.image-item img');
+            const images = Array.from(imageItems).map(img => img.src);
+            
+            const articleData = {
+                title: document.getElementById('title').value,
+                date: document.getElementById('date').value,
+                time: document.getElementById('time').value,
+                category: document.getElementById('category').value,
+                author: document.getElementById('author').value,
+                views: document.getElementById('views').value,
+                content: document.getElementById('content').value,
+                tags: document.getElementById('tags').value.split(',').map(tag => tag.trim()).filter(tag => tag),
+                images: images
+            };
+
+            // Save to localStorage for local editing
+            localStorage.setItem('articleData', JSON.stringify(articleData));
+            
+            // Create URL with article data
+            const articleParam = btoa(JSON.stringify(articleData));
+            const url = `index.html?article=${articleParam}`;
+            
+            // Copy URL to clipboard
+            navigator.clipboard.writeText(url).then(() => {
+                alert('Article URL has been copied to clipboard! Share this URL to view the article on any device.');
+            }).catch(() => {
+                // Fallback if clipboard API is not available
+                const tempInput = document.createElement('input');
+                tempInput.value = url;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+                alert('Article URL has been copied to clipboard! Share this URL to view the article on any device.');
+            });
+        });
+
+        // Preview article
+        function previewArticle() {
+            const articleData = JSON.parse(localStorage.getItem('articleData'));
+            if (articleData) {
+                const articleParam = btoa(JSON.stringify(articleData));
+                window.location.href = `index.html?article=${articleParam}`;
+            } else {
+                alert('Please save your changes first!');
+            }
+        }
+
+        // Add this new function for password toggle
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleButton = document.querySelector('.toggle-password i');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleButton.classList.remove('fa-eye');
+                toggleButton.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleButton.classList.remove('fa-eye-slash');
+                toggleButton.classList.add('fa-eye');
+            }
+        }
+    </script>
+</body>
+</html> 

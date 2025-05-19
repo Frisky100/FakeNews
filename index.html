@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Im Nationalpark Stilfserjoch wurde ein geschützter Auerhahn von Wilderern aus dem Vinschgau erschossen. Der Vorfall ereignete sich in der vergangenen Woche.">
+    <meta name="keywords" content="Nationalpark Stilfserjoch, Auerhahn, Wilderei, Vinschgau, Chronik">
+    <meta property="og:title" content="Nationalpark Stilfserjoch: Geschützter Auerhahn von Vinschger Wilderern erschossen">
+    <meta property="og:description" content="Im Nationalpark Stilfserjoch wurde ein geschützter Auerhahn von Wilderern aus dem Vinschgau erschossen.">
+    <meta property="og:image" content="images/auerhahn-nationalpark.jpg">
+    <meta property="og:url" content="https://www.stol.it/artikel/chronik/nationalpark-stilfserjoch-geschuetzter-auerhahn-von-vinschger-wilderer-40-erschossen">
+    <title>Nationalpark Stilfserjoch: Geschützter Auerhahn von Vinschger Wilderern erschossen | stol.it</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-container">
+            <a href="/">
+                <img src="images/logo.svg" alt="stol.it" class="logo">
+            </a>
+            <nav class="main-nav">
+                <a href="#" class="nav-link active">Home</a>
+                <a href="#" class="nav-link">Chronik</a>
+                <a href="#" class="nav-link">Sport</a>
+                <a href="#" class="nav-link">Wirtschaft</a>
+                <a href="#" class="nav-link">Politik</a>
+                <a href="#" class="nav-link">Kultur</a>
+            </nav>
+            <a href="admin.html" class="admin-link">Admin</a>
+        </div>
+    </header>
+
+    <article class="article">
+        <header class="article-header">
+            <h1 class="article-title" id="article-title">Nationalpark Stilfserjoch: Geschützter Auerhahn von Vinschger Wilderern erschossen</h1>
+            <div class="article-meta">
+                <span id="article-date"><i class="far fa-calendar"></i> 15. März 2024</span>
+                <span id="article-time"><i class="far fa-clock"></i> 14:30 Uhr</span>
+                <span id="article-category"><i class="far fa-folder"></i> Chronik</span>
+                <span id="article-author"><i class="far fa-user"></i> Redaktion</span>
+                <span id="article-views"><i class="far fa-eye"></i> 1.234 Aufrufe</span>
+            </div>
+        </header>
+
+        <div class="article-images" id="article-images">
+            <!-- Images will be loaded dynamically -->
+        </div>
+
+        <div class="article-content" id="article-content">
+            <!-- Content will be loaded dynamically -->
+        </div>
+
+        <div class="article-tags" id="article-tags">
+            <!-- Tags will be loaded here -->
+        </div>
+
+        <footer class="article-footer">
+            <div class="article-tags" id="article-tags">
+                <!-- Tags will be loaded dynamically -->
+            </div>
+            <p class="source">Dieser Beitrag enthält falsche Informationen und stellt keine tatsächlichen Ereignisse oder Fakten dar. Bitte nicht ernst nehmen.</p>
+        </footer>
+    </article>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <p>Fake News Schulprojekt - Finn Pfeifer</p>
+        </div>
+    </footer>
+
+    <script>
+        // Check authentication
+        function checkAuth() {
+            const cookies = document.cookie.split(';');
+            const authCookie = cookies.find(cookie => cookie.trim().startsWith('auth='));
+            if (!authCookie) {
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Check auth on page load
+        checkAuth();
+
+        // Load article data
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+            
+            // Get article data from URL parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            const articleParam = urlParams.get('article');
+            
+            if (articleParam) {
+                try {
+                    const articleData = JSON.parse(atob(articleParam));
+                    updateArticleContent(articleData);
+                } catch (e) {
+                    console.error('Error parsing article data:', e);
+                }
+            } else {
+                // Fallback to localStorage for backward compatibility
+                const savedArticle = localStorage.getItem('articleData');
+                if (savedArticle) {
+                    const articleData = JSON.parse(savedArticle);
+                    updateArticleContent(articleData);
+                }
+            }
+        });
+
+        function updateArticleContent(articleData) {
+            // Update article title
+            document.getElementById('article-title').textContent = articleData.title || '';
+
+            // Update meta information
+            const date = new Date(articleData.date);
+            document.getElementById('article-date').textContent = date.toLocaleDateString('de-DE', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            document.getElementById('article-time').textContent = articleData.time || '';
+            document.getElementById('article-category').textContent = articleData.category || '';
+            document.getElementById('article-author').textContent = articleData.author || '';
+            document.getElementById('article-views').textContent = articleData.views || '0';
+
+            // Update content with formatting
+            const contentDiv = document.getElementById('article-content');
+            contentDiv.innerHTML = '';
+
+            // Split content into paragraphs and process each
+            const paragraphs = articleData.content.split('\n\n');
+            paragraphs.forEach(paragraph => {
+                if (paragraph.trim()) {
+                    let formattedParagraph = paragraph;
+
+                    // Process headings
+                    if (paragraph.startsWith('# ')) {
+                        const heading = document.createElement('h1');
+                        heading.textContent = paragraph.substring(2);
+                        contentDiv.appendChild(heading);
+                    } else if (paragraph.startsWith('## ')) {
+                        const heading = document.createElement('h2');
+                        heading.textContent = paragraph.substring(3);
+                        contentDiv.appendChild(heading);
+                    } else {
+                        // Process bold, italic, and links
+                        formattedParagraph = formattedParagraph
+                            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                            .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                            .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank">$1</a>');
+
+                        const p = document.createElement('p');
+                        p.innerHTML = formattedParagraph;
+                        contentDiv.appendChild(p);
+                    }
+                }
+            });
+
+            // Update tags
+            const tagsContainer = document.getElementById('article-tags');
+            tagsContainer.innerHTML = '';
+            if (articleData.tags && articleData.tags.length > 0) {
+                articleData.tags.forEach(tag => {
+                    const tagElement = document.createElement('span');
+                    tagElement.className = 'tag';
+                    tagElement.textContent = tag;
+                    tagsContainer.appendChild(tagElement);
+                });
+            }
+
+            // Update images
+            const imagesContainer = document.getElementById('article-images');
+            imagesContainer.innerHTML = '';
+            if (articleData.images && articleData.images.length > 0) {
+                articleData.images.forEach(imageData => {
+                    const img = document.createElement('img');
+                    img.src = imageData;
+                    img.alt = 'Article image';
+                    imagesContainer.appendChild(img);
+                });
+            }
+        }
+
+        // Add copy link functionality
+        document.querySelector('.fa-copy').parentElement.addEventListener('click', function(e) {
+            e.preventDefault();
+            navigator.clipboard.writeText(window.location.href);
+            alert('Link kopiert!');
+        });
+    </script>
+</body>
+</html> 
