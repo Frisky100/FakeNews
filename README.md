@@ -1,24 +1,11 @@
-# Nationalpark Stilfserjoch Article
+# Fake News Schulprojekt - Article Website
 
-This is a static version of an article about the Nationalpark Stilfserjoch, optimized for GitHub Pages deployment.
+This project is a static website designed to display a single article, with a simple web-based administration interface to edit the article's content.
 
-## Deployment Instructions
+The article content, including text, metadata, and images (stored as base64 strings), is saved to and loaded from a `article.json` file hosted on GitHub.
 
-1. Create a new repository on GitHub
-2. Push these files to your repository
-3. Go to your repository settings
-4. Scroll down to the "GitHub Pages" section
-5. Under "Source", select "main" branch
-6. Click "Save"
+The admin interface allows users to log in with a password, modify various aspects of the article (title, date, content, tags, images), and save the changes directly back to the `article.json` file in the repository.
 
-Your site will be published at `https://[your-username].github.io/[repository-name]`
+The main page fetches and renders the latest article content from the `article.json` file using client-side JavaScript.
 
-## Local Development
-
-To view the site locally, simply open the `index.html` file in your web browser.
-
-## Files
-
-- `index.html` - The main article content
-- `styles.css` - Styling for the article
-- `README.md` - This documentation file 
+This project was created by Finn Pfeifer. 
