@@ -345,7 +345,8 @@
             
             // Create URL with article data
             const articleParam = btoa(JSON.stringify(articleData));
-            const url = `index.html?article=${articleParam}`;
+            const baseUrl = window.location.href.split('?')[0].replace('admin.html', 'index.html');
+            const url = `${baseUrl}?article=${articleParam}`;
             
             // Copy URL to clipboard
             navigator.clipboard.writeText(url).then(() => {
@@ -367,7 +368,8 @@
             const articleData = JSON.parse(localStorage.getItem('articleData'));
             if (articleData) {
                 const articleParam = btoa(JSON.stringify(articleData));
-                window.location.href = `index.html?article=${articleParam}`;
+                const baseUrl = window.location.href.split('?')[0].replace('admin.html', 'index.html');
+                window.location.href = `${baseUrl}?article=${articleParam}`;
             } else {
                 alert('Please save your changes first!');
             }

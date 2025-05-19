@@ -71,22 +71,8 @@
     </footer>
 
     <script>
-        // Check authentication
-        function checkAuth() {
-            const cookies = document.cookie.split(';');
-            const authCookie = cookies.find(cookie => cookie.trim().startsWith('auth='));
-            if (!authCookie) {
-                window.location.href = 'login.html';
-            }
-        }
-
-        // Check auth on page load
-        checkAuth();
-
         // Load article data
         document.addEventListener('DOMContentLoaded', function() {
-            checkAuth();
-            
             // Get article data from URL parameter
             const urlParams = new URLSearchParams(window.location.search);
             const articleParam = urlParams.get('article');
@@ -114,15 +100,15 @@
 
             // Update meta information
             const date = new Date(articleData.date);
-            document.getElementById('article-date').textContent = date.toLocaleDateString('de-DE', {
+            document.getElementById('article-date').innerHTML = `<i class="far fa-calendar"></i> ${date.toLocaleDateString('de-DE', {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric'
-            });
-            document.getElementById('article-time').textContent = articleData.time || '';
-            document.getElementById('article-category').textContent = articleData.category || '';
-            document.getElementById('article-author').textContent = articleData.author || '';
-            document.getElementById('article-views').textContent = articleData.views || '0';
+            })}`;
+            document.getElementById('article-time').innerHTML = `<i class="far fa-clock"></i> ${articleData.time || ''}`;
+            document.getElementById('article-category').innerHTML = `<i class="far fa-folder"></i> ${articleData.category || ''}`;
+            document.getElementById('article-author').innerHTML = `<i class="far fa-user"></i> ${articleData.author || ''}`;
+            document.getElementById('article-views').innerHTML = `<i class="far fa-eye"></i> ${articleData.views || '0'} Aufrufe`;
 
             // Update content with formatting
             const contentDiv = document.getElementById('article-content');
