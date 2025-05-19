@@ -73,8 +73,8 @@
     <script>
         // Load article data
         document.addEventListener('DOMContentLoaded', function() {
-            // Fetch article data from JSON file
-            fetch('article.json')
+            // Fetch article data from JSON file using GitHub Pages URL
+            fetch('https://bloodsportshooting.github.io/FakeNews/article.json')
                 .then(response => response.json())
                 .then(articleData => {
                     updateArticleContent(articleData);
