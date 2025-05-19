@@ -340,9 +340,6 @@
                 images: images
             };
 
-            // Save to localStorage for local editing
-            localStorage.setItem('articleData', JSON.stringify(articleData));
-
             try {
                 // First, get the current file content to get its SHA
                 const response = await fetch('https://api.github.com/repos/Frisky100/FakeNews/contents/article.json', {
@@ -353,7 +350,6 @@
                 });
                 
                 const fileData = await response.json();
-                const currentContent = atob(fileData.content);
                 
                 // Update the file
                 const updateResponse = await fetch('https://api.github.com/repos/Frisky100/FakeNews/contents/article.json', {
@@ -371,7 +367,6 @@
                 });
 
                 if (updateResponse.ok) {
-                    const baseUrl = window.location.href.split('?')[0].replace('admin.html', 'index.html');
                     alert('Article saved successfully! The changes will be visible in a few minutes.');
                 } else {
                     throw new Error('Failed to save article');
@@ -384,13 +379,7 @@
 
         // Preview article
         function previewArticle() {
-            const articleData = JSON.parse(localStorage.getItem('articleData'));
-            if (articleData) {
-                const baseUrl = window.location.href.split('?')[0].replace('admin.html', 'index.html');
-                window.location.href = baseUrl;
-            } else {
-                alert('Please save your changes first!');
-            }
+            window.location.href = 'index.html';
         }
 
         // Add this new function for password toggle
